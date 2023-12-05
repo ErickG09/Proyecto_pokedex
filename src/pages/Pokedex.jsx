@@ -17,7 +17,6 @@ export const Pokedex = () => {
   const [currentUID, setCurrentUID] = useState('');
   const [selectedPokemonId, setSelectedPokemonId] = useState(null);
 
-
   const url = `https://pokeapi.co/api/v2/pokemon/?limit=9&offset=${
     (page - 1) * 9
   }`;
@@ -34,18 +33,21 @@ export const Pokedex = () => {
   }, [currentUID]);
 
   const obtenerEquipo = async (uid) => {
-    const equipoRef = doc(dbStorage, 'users', uid); // Use the UID to reference the correct document
+    const equipoRef = doc(dbStorage, 'users', uid); // Reference to the user's document
     const docSnap = await getDoc(equipoRef);
-
+  
     if (docSnap.exists()) {
       const pokemonIds = docSnap.data().pokemons;
-
       return pokemonIds;
-      
     } else {
-      console.log('No hay equipo para este usuario');
+      console.log('Creando equipo para el usuario nuevo');
+      // Create a new document with an empty team
+      await setDoc(equipoRef, { pokemons: [] });
+      return [];
     }
   };
+
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
