@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Modal, Card, CardContent, Typography, Chip, Button, Grid, Box } from '@mui/material';
 
 const tipoColor = {
     normal: '#A8A77A',
@@ -58,28 +59,40 @@ export const PokemonDetalles = ({ pokemonId, onClose }) => {
   }
 
   return (
-    <div className="pokemon-details-backdrop">
-      <div className="pokemon-details">
-        <img src={details.image} alt={details.name} />
-        <h2>{details.name.charAt(0).toUpperCase() + details.name.slice(1)}</h2>
-        <p>No. {details.id}</p>
-        <div className="pokemon-types">
-        {details.types.map((tipo) => (
-                      <span key={tipo} style={{ backgroundColor: tipoColor[tipo], color: '#fff' }}>
-                          {tipo.charAt(0).toUpperCase() + tipo.slice(1)}
-                      </span>
-                  ))}
-        </div>
-        <ul>
-          {details.stats.map(stat => (
-            <li key={stat.name}>
-              {stat.name}: {stat.value}
-            </li>
-          ))}
-        </ul>
-        <button onClick={onClose}>Cerrar</button>
-      </div>
-    </div>
+    <Modal open={!!pokemonId} onClose={onClose}>
+      <Card sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, boxShadow: 24, p: 4 }}>
+        <CardContent>
+          <Grid container spacing={2} direction="column" alignItems="center">
+            <Grid item>
+              <Box component="img" src={details.image} alt={details.name} sx={{ width: 200 }} />
+            </Grid>
+            <Grid item>
+              <Typography variant="h4">{details.name.charAt(0).toUpperCase() + details.name.slice(1)}</Typography>
+              <Typography variant="subtitle1">No. {details.id}</Typography>
+            </Grid>
+            <Grid item>
+              <Box>
+                {details.types.map((tipo) => (
+                  <Chip key={tipo} label={tipo.toUpperCase()} sx={{ backgroundColor: tipoColor[tipo], color: 'white', margin: '4px' }} />
+                ))}
+              </Box>
+            </Grid>
+            <Grid item>
+              <ul style={{ listStyle: 'none', padding: 0 }}>
+                {details.stats.map(stat => (
+                  <li key={stat.name}>
+                    <Typography variant="body1">{stat.name}: {stat.value}</Typography>
+                  </li>
+                ))}
+              </ul>
+            </Grid>
+            <Grid item>
+              <Button variant="contained" color="primary" onClick={onClose}>Cerrar</Button>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+    </Modal>
   );
 };
 
